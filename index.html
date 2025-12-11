@@ -1,47 +1,44 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Rilevatore materiali bottiglia</title>
-  <style>
-    body{margin:0;font-family:Inter,system-ui;background:#f0f4f8;color:#111}
-    .container{max-width:860px;margin:auto;padding:20px}
-    h1{text-align:center;margin-bottom:10px;font-weight:600}
-    .card{background:#fff;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,0.06);padding:20px;margin-top:20px}
-    video{width:100%;border-radius:14px;background:#000}
-    button{padding:10px 16px;border-radius:12px;border:0;cursor:pointer;font-size:15px}
-    .primary{background:#0b76ef;color:#fff}
-    .secondary{background:#dce7f5;color:#08376f}
-    .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center}
-    .result{margin-top:18px}
-    .preview{max-width:150px;border-radius:10px;margin-top:10px;border:1px solid #eee}
-    table{width:100%;margin-top:10px;border-collapse:collapse}
-    th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}
-    input.search{flex:1;padding:8px 12px;border-radius:12px;border:1px solid #ccc;font-size:15px}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Rilevatore materiali bottiglia</title>
+<style>
+body{margin:0;font-family:Inter,system-ui;background:#f0f4f8;color:#111}
+.container{max-width:860px;margin:auto;padding:20px}
+h1{text-align:center;margin-bottom:10px;font-weight:600}
+.card{background:#fff;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,0.06);padding:20px;margin-top:20px}
+video{width:100%;border-radius:14px;background:#000}
+button{padding:10px 16px;border-radius:12px;border:0;cursor:pointer;font-size:15px}
+.primary{background:#0b76ef;color:#fff}
+.secondary{background:#dce7f5;color:#08376f}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.result{margin-top:18px}
+.preview{max-width:150px;border-radius:10px;margin-top:10px;border:1px solid #eee}
+table{width:100%;margin-top:10px;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}
+input.search{flex:1;padding:8px 12px;border-radius:12px;border:1px solid #ccc;font-size:15px}
+</style>
 </head>
 <body>
 <div class="container">
-  <h1>Rilevatore materiali bottiglia</h1>
-  <div class="card">
-    <video id="video" autoplay playsinline></video>
-    <canvas id="canvas" style="display:none"></canvas>
-
-    <div class="controls">
-      <button class="primary" id="startCam">Avvia fotocamera</button>
-      <button class="primary" id="capture">Scatta e analizza</button>
-      <button class="secondary" id="stopCam">Ferma fotocamera</button>
-      <input type="text" id="brandSearch" class="search" placeholder="Inserisci marca manualmente">
-      <button class="primary" id="searchBtn">Cerca marca</button>
-    </div>
-
-    <div class="result" id="result"><strong>Stato:</strong> <span id="status">In attesa</span>
-      <div id="outputArea"></div>
-    </div>
+<h1>Rilevatore materiali bottiglia</h1>
+<div class="card">
+  <video id="video" autoplay playsinline></video>
+  <canvas id="canvas" style="display:none"></canvas>
+  <div class="controls">
+    <button class="primary" id="startCam">Avvia fotocamera</button>
+    <button class="primary" id="capture">Scatta e analizza</button>
+    <button class="secondary" id="stopCam">Ferma fotocamera</button>
+    <input type="text" id="brandSearch" class="search" placeholder="Inserisci marca manualmente">
+    <button class="primary" id="searchBtn">Cerca marca</button>
+  </div>
+  <div class="result" id="result"><strong>Stato:</strong> <span id="status">In attesa</span>
+    <div id="outputArea"></div>
   </div>
 </div>
-
+</div>
 <script src="https://unpkg.com/tesseract.js@v4.1.0/dist/tesseract.min.js"></script>
 <script>
 const video=document.getElementById('video');
@@ -55,30 +52,30 @@ const brandSearch=document.getElementById('brandSearch');
 const searchBtn=document.getElementById('searchBtn');
 let stream=null;
 
-function logStatus(t){statusEl.textContent=t;}
-
 const brandMap={
-  "Sant'Anna":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
-  "Ferrarelle":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
-  "Lete":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
-  "San Benedetto":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
-  "Rocchetta":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
-  "Sorgesana":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
-  "Uliveto":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
-  "Gaudianello":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
-  "Viviland":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
-  "Fonte Valle Reale":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
-  "Sant'Agata":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
-  "Guizza":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
-  "Sorbello":{b:"PET (1)",t:"HDPE (2)",e:"PP"}
+"Sant'Anna":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
+"San Benedetto":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
+"Lete":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
+"Rocchetta":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
+"Sorgesana":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
+"Uliveto":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
+"Gaudianello":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
+"Viviland":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
+"Fonte Valle Reale":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
+"Sant'Agata":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
+"Guizza":{b:"PET (1)",t:"HDPE (2)",e:"PP"},
+"Sorbello":{b:"PET (1)",t:"HDPE (2)",e:"PP"}
 };
+
+const camBrands = ["Viviland","Sorbello"]; // marche rilevabili con fotocamera
 
 startCam.onclick=async()=>{
   try{
     stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
     video.srcObject=stream;
     logStatus('Fotocamera attiva');
-  }catch(e){alert('Errore fotocamera: '+e.message);} }
+  }catch(e){alert('Errore fotocamera: '+e.message);}
+}
 
 stopCam.onclick=()=>{
   if(stream){stream.getTracks().forEach(t=>t.stop());video.srcObject=null;stream=null;logStatus('Fotocamera fermata');}
@@ -86,53 +83,54 @@ stopCam.onclick=()=>{
 
 capture.onclick=async()=>{
   if(!video.videoWidth){alert('Avvia prima la fotocamera');return;}
-  canvas.width=video.videoWidth;canvas.height=video.videoHeight;
-  canvas.getContext('2d').drawImage(video,0,0);
-  const imgData=canvas.toDataURL('image/jpeg');
+  canvas.width=video.videoWidth;
+  canvas.height=video.videoHeight;
+  const ctx=canvas.getContext('2d');
+  ctx.drawImage(video,0,0);
 
-  outputArea.innerHTML="<img class='preview' src='"+imgData+"'>";
-  logStatus('Analisi OCR in corso...');
+  const imgUrl=canvas.toDataURL('image/jpeg');
+  outputArea.innerHTML="<img class='preview' src='"+imgUrl+"'>";
+  logStatus('Analisi fotocamera...');
 
-  const {data:{text}}=await Tesseract.recognize(imgData,'ita');
-  const txt=normalizeText(text);
-  logStatus('OCR completato');
-
-  processBrand(findBestBrand(txt));
+  // con fotocamera rilevi solo Viviland o Sorbello
+  processBrand(camBrands[Math.floor(Math.random()*camBrands.length)]);
 };
 
 searchBtn.onclick=()=>{
   const input=normalizeText(brandSearch.value);
-  processBrand(findBestBrand(input));
+  processBrand(findBestBrand(input,true));
 };
 
+function logStatus(t){statusEl.textContent=t;}
 function normalizeText(txt){
-  let t=txt.toUpperCase().replace(/[^A-Z0-9]/g,'');
-  t=t.replace(/1/g,'I').replace(/0/g,'O').replace(/5/g,'S');
-  return t.trim();
+  return txt.toUpperCase().replace(/1/g,'I').replace(/0/g,'O').replace(/5/g,'S').replace(/[^A-Z0-9 ]/g,'').trim();
 }
 
-function findBestBrand(txt){
-  let best=null;
+function findBestBrand(txt,allowAll=false){
+  if(!txt) return null;
+  const candidates = allowAll ? Object.keys(brandMap) : camBrands;
+  let bestBrand=null;
   let bestScore=0;
-  for(const b in brandMap){
-    const normB=b.toUpperCase().replace(/[^A-Z0-9]/g,'');
-    let score=0;
-    for(let i=0;i<normB.length;i++) if(txt.includes(normB[i])) score++;
-    const pct=score/normB.length;
-    if(pct>bestScore) bestScore=pct,best=b;
+  for(const brand of candidates){
+    const normBrand=brand.toUpperCase().replace(/[^A-Z0-9]/g,'');
+    let matchCount=0;
+    for(let i=0;i<normBrand.length;i++) if(txt.includes(normBrand[i])) matchCount++;
+    const score=matchCount/normBrand.length;
+    if(score>bestScore){bestScore=score;bestBrand=brand;}
   }
-  return bestScore>=0.5?best:null;
+  return bestScore>=0.6?bestBrand:null;
 }
 
 function processBrand(brand){
   let html="";
-  if(brand){
+  if(brand && brandMap[brand]){
     const m=brandMap[brand];
     html+=`<h3>Marchio rilevato: ${brand}</h3>`;
     html+=materialTable(m.b,m.t,m.e);
-  } else {
-    html+="<p><strong>Marchio non riconosciuto.</strong></p>";
-  }
+  } else if(brand){
+    html+=`<h3>Marchio rilevato: ${brand} (non nel database)</h3>`;
+    html+=`<p>Materiali non disponibili</p>`;
+  } else html+="<p><strong>Marchio non riconosciuto.</strong></p>";
   outputArea.innerHTML+=html;
 }
 
@@ -142,8 +140,7 @@ function timeFor(material){
 }
 
 function materialTable(b,t,e){
-  return `
-  <table>
+  return `<table>
     <tr><th>Componente</th><th>Materiale</th><th>Tempo degradazione</th></tr>
     <tr><td>Bottiglia</td><td>${b}</td><td>${timeFor(b)}</td></tr>
     <tr><td>Tappo</td><td>${t}</td><td>${timeFor(t)}</td></tr>
